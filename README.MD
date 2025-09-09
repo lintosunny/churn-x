@@ -8,4 +8,4 @@ We build an ML-powered churn prediction system for a telecom company that not on
 * High churn signals deeper issues in product, service, or customer experience.
 
 ## Deployment Architecture
-![deployment-architecture](assets\deployment-architecture.png)
+![deployment-architecture](assets/deployment-architecture.png)
