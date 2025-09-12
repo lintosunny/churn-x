@@ -20,29 +20,29 @@
     "cols_to_scale": [
         "CLTV",
         "Tenure Months",
-        "Monthly Charges",
-        "Longitude",
-        "Latitude"
+        "Monthly Charges"
     ],
-    "target_feature": [
-        "Churn Score"
-    ],
+    "target_feature": "Churn Score",
     "final_features": [
         "City",
         "Contract",
-        "Online Security",
-        "Tech Support",
+        "is_payment_recurring",
         "Tenure Months",
+        "Tech Support",
+        "Online Security",
         "Internet Service",
-        "Device Protection",
         "Payment Method",
         "Online Backup",
+        "Device Protection",
         "Dependents",
         "Streaming TV",
         "Streaming Movies",
-        "Paperless Billing",
+        "is_payment_automatic",
         "Monthly Charges",
+        "Paperless Billing",
+        "additional_services",
+        "Senior Citizen",
         "Partner",
-        "Senior Citizen"
+        "CLTV"
     ]
 }
