@@ -20,9 +20,13 @@
     "cols_to_scale": [
         "CLTV",
         "Tenure Months",
-        "Monthly Charges"
+        "Monthly Charges",
+        "additional_services",
+        "3rd_party_services"
     ],
-    "target_feature": "Churn Score",
+    "target_feature": [
+        "Churn Value"
+    ],
     "final_features": [
         "City",
         "Contract",
