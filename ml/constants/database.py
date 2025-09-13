@@ -1,0 +1,2 @@
+DATABASE = "CHURNX"
+COLLECTION = "TelcoChurnData"

@@ -1,6 +1,7 @@
 from etl.data_loader import TelcoDataExtract
 from etl.constants import FILE_PATH, DATABASE, COLLECTION
 
+
 telco = TelcoDataExtract()
 
 if __name__ == '__main__':

@@ -219,3 +219,7 @@ __marimo__/
 # folders
 logs
 artifacts
+artifact
+.vscode
+.venv 
+.python-version

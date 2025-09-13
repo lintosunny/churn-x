@@ -9,13 +9,12 @@ from pathlib import Path
 from typing import List, Dict, Any, Optional
 from ml.exception import TelcoChurnException
 from ml.logger import logging
-
 from dotenv import load_dotenv
+
+
 load_dotenv()
-
-MONGO_DB_URL = os.getenv("MONGO_DB_URL")
-
 ca=certifi.where()
+MONGO_DB_URL = os.getenv("MONGO_DB_URL")
 
 class TelcoDataExtract:
     """

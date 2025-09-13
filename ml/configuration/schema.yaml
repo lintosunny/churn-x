@@ -1,0 +1,63 @@
+cols_to_target_encode:
+  - City
+  - Internet Service
+  - Online Security
+  - Online Backup
+  - Device Protection
+  - Tech Support
+  - Streaming TV
+  - Streaming Movies
+  - Contract
+  - Payment Method
+
+cols_to_label_encode:
+  - Senior Citizen
+  - Partner
+  - Dependents
+  - Paperless Billing
+
+cols_to_scale:
+  - CLTV
+  - Tenure Months
+  - Monthly Charges
+  - additional_services
+  - 3rd_party_services
+
+target_feature:
+  - Churn Value
+
+features:
+  - City
+  - Senior Citizen
+  - Partner
+  - Dependents
+  - Tenure Months
+  - Phone Service
+  - Multiple Lines
+  - Internet Service
+  - Online Security
+  - Online Backup
+  - Device Protection
+  - Tech Support
+  - Streaming TV
+  - Streaming Movies
+  - Contract
+  - Paperless Billing
+  - Payment Method
+  - Monthly Charges
+  - Total Charges
+  - Churn Value
+  - CLTV
+
+drop_cols:
+  - Country
+  - State
+  - Zip Code
+  - Latitude
+  - Longitude
+  - Churn Label
+  - Churn Score
+  - Churn Reason
+  - Gender
+  - Count
+  - Lat Long
