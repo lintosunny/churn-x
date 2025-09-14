@@ -7,5 +7,7 @@ We build an ML-powered churn prediction system for a telecom company that not on
 * A 5% boost in retention can raise profits by 25–95%.
 * High churn signals deeper issues in product, service, or customer experience.
 
-## Deployment Architecture
+## ML Architecture
+![ml-architecture](assets/ml-architecture.png)
+## ML Deployment Architecture
 ![deployment-architecture](assets/deployment-architecture.png)
