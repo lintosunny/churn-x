@@ -16,7 +16,7 @@ load_dotenv()
 ca=certifi.where()
 MONGO_DB_URL = os.getenv("MONGO_DB_URL")
 
-class TelcoDataExtract:
+class TelcoDataLoad:
     """
     Extracting Telco churn data from CSV files and inserting into MongoDB
 

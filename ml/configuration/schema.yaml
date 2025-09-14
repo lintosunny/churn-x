@@ -9,6 +9,8 @@ cols_to_target_encode:
   - Streaming Movies
   - Contract
   - Payment Method
+  - Phone Service
+  - Multiple Lines
 
 cols_to_label_encode:
   - Senior Citizen
@@ -22,32 +24,6 @@ cols_to_scale:
   - Monthly Charges
   - additional_services
   - 3rd_party_services
-
-target_feature:
-  - Churn Value
-
-features:
-  - City
-  - Senior Citizen
-  - Partner
-  - Dependents
-  - Tenure Months
-  - Phone Service
-  - Multiple Lines
-  - Internet Service
-  - Online Security
-  - Online Backup
-  - Device Protection
-  - Tech Support
-  - Streaming TV
-  - Streaming Movies
-  - Contract
-  - Paperless Billing
-  - Payment Method
-  - Monthly Charges
-  - Total Charges
-  - Churn Value
-  - CLTV
 
 drop_cols:
   - Country
@@ -85,6 +61,10 @@ columns:
   - Total Charges
   - Churn Value
   - CLTV
+  - additional_services
+  - 3rd_party_services
+  - is_payment_automatic
+  - is_payment_recurring
 
 numerical_columns:
   - Tenure Months
@@ -92,3 +72,10 @@ numerical_columns:
   - Total Charges
   - Churn Value
   - CLTV
+  - additional_services
+  - 3rd_party_services
+  - is_payment_automatic
+  - is_payment_recurring
+
+target_column:
+  - Churn Value

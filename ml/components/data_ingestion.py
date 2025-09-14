@@ -10,7 +10,10 @@ from ml.entity.config_entity import DataIngestionConfig
 from ml.utils.main_utils import read_yaml_file
 from sklearn.model_selection import train_test_split
 from ml.constants.training_pipeline import SCHEMA_FILE_PATH
-from ml.constants.training_pipeline import DATA_INGESTION_DATABASE_NAME, DATA_INGESTION_COLLECTION_NAME
+from ml.constants.training_pipeline import (
+    DATA_INGESTION_DATABASE_NAME, 
+    DATA_INGESTION_COLLECTION_NAME
+)
 
 
 class DataIngestion:

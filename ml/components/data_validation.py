@@ -8,7 +8,10 @@ from ml.exception import TelcoChurnException
 from ml.utils.main_utils import read_yaml_file, write_yaml_file
 from ml.constants.training_pipeline import SCHEMA_FILE_PATH
 from ml.entity.config_entity import DataValidationConfig
-from ml.entity.artifact_entity import DataIngestionArtifact, DataValidationArtifact
+from ml.entity.artifact_entity import (
+    DataIngestionArtifact, 
+    DataValidationArtifact
+)
 
 
 class DataValidation:

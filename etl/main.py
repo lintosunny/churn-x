@@ -1,9 +1,11 @@
-from etl.data_loader import TelcoDataExtract
-from etl.constants import FILE_PATH, DATABASE, COLLECTION
+from etl.load import TelcoDataLoad
+from etl.transform import TelcoDataTransform
+from etl.constants import RAW_FILE_PATH, TRANSFORMED_FILE_PATH, DATABASE, COLLECTION
 
-
-telco = TelcoDataExtract()
+data_transformer = TelcoDataTransform()
+data_loader = TelcoDataLoad()
 
 if __name__ == '__main__':
-    records = telco.csv_to_json_convertor(file_path=FILE_PATH)
-    telco.insert_data_mongodb(records=records, database=DATABASE, collection=COLLECTION)
+    data_transformer.initiate_data_transformation()
+    records = data_loader.csv_to_json_convertor(file_path=TRANSFORMED_FILE_PATH)
+    data_loader.insert_data_mongodb(records=records, database=DATABASE, collection=COLLECTION)
