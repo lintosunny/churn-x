@@ -51,14 +51,14 @@ class DataIngestion:
 
             logging.info("Performed train-test split in dataframe")
 
-            dir_path = os.path.dirname(self.data_ingestion_config.training_file_path)
+            dir_path = os.path.dirname(self.data_ingestion_config.train_file_path)
             os.makedirs(dir_path, exist_ok=True)
             logging.info("Started train_df and test_df data exporting...")
 
             train_df.to_csv(
-                self.data_ingestion_config.training_file_path, index=False, header=True
+                self.data_ingestion_config.train_file_path, index=False, header=True
             )
-            logging.info(f"train df saved in {self.data_ingestion_config.training_file_path}")
+            logging.info(f"train df saved in {self.data_ingestion_config.train_file_path}")
 
             test_df.to_csv(
                 self.data_ingestion_config.test_file_path, index=False, header=True
@@ -74,7 +74,7 @@ class DataIngestion:
             df = df.drop(self._schema_config["drop_cols"], axis=1)
             self.save_data_split(dataframe=df)
             data_ingestion_artifact = DataIngestionArtifact(
-                trained_file_path=self.data_ingestion_config.training_file_path,
+                train_file_path=self.data_ingestion_config.train_file_path,
                 test_file_path=self.data_ingestion_config.test_file_path
             )
             return data_ingestion_artifact
