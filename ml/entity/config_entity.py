@@ -128,6 +128,6 @@ class ModelTrainerConfig:
             training_pipeline.MODEL_TRAINER_TRAINED_MODEL_NAME
         )
 
-        self.expected_recall: float = training_pipeline.MODEL_TRAINER_EXPECTED_SCORE
+        self.expected_recall_1: float = training_pipeline.MODEL_TRAINER_EXPECTED_SCORE
 
         self.overfitting_underfitting_threshold: float = training_pipeline.MODEL_TRAINER_OVERFITTING_UNDER_FITTING_THRESHOLD
