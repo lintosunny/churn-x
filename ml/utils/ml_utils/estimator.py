@@ -1,6 +1,6 @@
 import os 
 import sys
-from ml.constants.training_pipeline import SAVED_MODEL_DIR, model_file_name
+from ml.constants.training_pipeline import SAVED_MODEL_DIR, MODEL_FILE_NAME
 
 # Train and Predict
 class TelcoChurnModel:

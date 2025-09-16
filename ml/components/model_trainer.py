@@ -1,41 +1,42 @@
-from ml.utils.main_utils import load_numpy_array_data, read_json_file, save_object, load_object, write_json_file
+
+
 from ml.exception import TelcoChurnException
 from ml.logger import logging
 import os
 import sys 
-# from ml-> metric->classification score
-# sensor model to predict
-from ml.entity.artifact_entity import DataTransformationArtifact, ModelTrainerArtifact
-from ml.entity.config_entity import ModelTrainerConfig
-
-# --- Machine Learning & Models ---
-from sklearn.linear_model import LogisticRegression, LinearRegression
+import optuna
+import dagshub
+import mlflow
+import joblib
+from dotenv import load_dotenv
+from sklearn.linear_model import LogisticRegression
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.neighbors import KNeighborsClassifier
 from xgboost import XGBClassifier
-
-# --- Model selection & hyperparameter tuning ---
 from sklearn.model_selection import cross_val_score
-import optuna
-#optuna.logging.set_verbosity(optuna.logging.WARNING)  # Suppress Optuna info logs
-
-# --- Metrics ---
-from sklearn.metrics import (
-    mean_squared_error,
-    classification_report, confusion_matrix, ConfusionMatrixDisplay,
-    accuracy_score, precision_score, recall_score, f1_score,
-    roc_curve, roc_auc_score, make_scorer
+from sklearn.metrics import recall_score,make_scorer
+from ml.utils.main_utils import (
+    load_numpy_array_data, 
+    read_json_file, save_object, 
+    load_object, 
+    write_json_file
 )
-
-from ml.utils.ml_utils import classification_score
+from ml.entity.artifact_entity import DataTransformationArtifact, ModelTrainerArtifact
+from ml.entity.config_entity import ModelTrainerConfig
+from ml.utils.ml_utils.metric import classification_score
 from ml.utils.ml_utils.estimator import TelcoChurnModel
+
+load_dotenv(override=True)
+
 
 class ModelTrainer:
     def __init__(self, data_transformation_artifact: DataTransformationArtifact, model_trainer_config: ModelTrainerConfig):
         self.data_transformation_artifact = data_transformation_artifact
         self.model_trainer_config = model_trainer_config
 
-    # ---------------- Optuna objective function: Logistic Regression ----------------
+    # -------------------------------------------------------------------------
+    # Objective Functions for Optuna (one per algorithm)
+    # -------------------------------------------------------------------------
     def create_objective_lr(self, X_train, y_train):
         """Create objective function for Logistic Regression with datasets"""
         def objective(trial):
@@ -46,11 +47,10 @@ class ModelTrainer:
                 class_weight=trial.suggest_categorical('class_weight', [None, 'balanced']),
                 random_state=42
             )
-            scorer = make_scorer(recall_score, average='binary', pos_label=1)
+            scorer = make_scorer(recall_score, average="binary", pos_label=1)
             return cross_val_score(model, X_train, y_train, cv=5, scoring=scorer, n_jobs=-1).mean()
         return objective
 
-    # ---------------- Optuna objective function: Random Forest ----------------
     def create_objective_rf(self, X_train, y_train):
         """Create objective function for Random Forest with datasets"""
         def objective(trial):
@@ -62,11 +62,10 @@ class ModelTrainer:
                 random_state=42,
                 n_jobs=-1
             )
-            scorer = make_scorer(recall_score, average='binary', pos_label=1)
+            scorer = make_scorer(recall_score, average="binary", pos_label=1)
             return cross_val_score(model, X_train, y_train, cv=5, scoring=scorer, n_jobs=-1).mean()
         return objective
     
-    # ---------------- Optuna objective function: K Nearest Neighbors ----------------
     def create_objective_knn(self, X_train, y_train):
         """Create objective function for Random Forest with datasets"""
         def objective(trial):
@@ -75,11 +74,10 @@ class ModelTrainer:
                 weights=trial.suggest_categorical("weights", ["uniform", "distance"]),
                 metric=trial.suggest_categorical("metric", ["euclidean", "manhattan"])
             )
-            scorer = make_scorer(recall_score, average='binary', pos_label=1)
+            scorer = make_scorer(recall_score, average="binary", pos_label=1)
             return cross_val_score(model, X_train, y_train, cv=5, scoring=scorer, n_jobs=-1).mean()
         return objective
     
-    # ---------------- Optuna objective function: XGBoost ----------------
     def create_objective_xgb(self, X_train, y_train):
         """Create objective function for Random Forest with datasets"""
         def objective(trial):
@@ -97,15 +95,18 @@ class ModelTrainer:
                 random_state=42,
                 n_jobs=-1
             )
-            scorer = make_scorer(recall_score, average='binary', pos_label=1)
+            scorer = make_scorer(recall_score, average="binary", pos_label=1)
             return cross_val_score(model, X_train, y_train, cv=5, scoring=scorer, n_jobs=-1).mean()
         return objective
 
-    def perform_hyper_parameter_tuning(self, X_train, y_train, X_test, y_test, n_trials=100):
+    # -------------------------------------------------------------------------
+    # Hyperparameter tuning with Optuna
+    # -------------------------------------------------------------------------
+    def perform_hyper_parameter_tuning(self, X_train, y_train, X_test, y_test, n_trials=50):
         try:
             logging.info("Starting hyperparameter tuning for all models...")
             
-            # Create objective functions with datasets
+            # Model objectives
             objectives = {
                 "LogisticRegression": self.create_objective_lr(X_train, y_train),
                 "RandomForestClassifier": self.create_objective_rf(X_train, y_train),
@@ -121,12 +122,13 @@ class ModelTrainer:
             for model_name, objective_func in objectives.items():
                 logging.info(f"Tuning {model_name}...")
                 
+                # Run Optuna
                 study = optuna.create_study(direction="maximize")
                 study.optimize(objective_func, n_trials=n_trials)
                 logging.info(f"{model_name} best CV recall score: {study.best_value:.4f}")
                 logging.info(f"{model_name} best params: {study.best_params}")
 
-                # Create and train model with best parameters
+                # Re-train best model with best params
                 if model_name == "LogisticRegression":
                     best_model = LogisticRegression(**study.best_params, random_state=42)
                 elif model_name == "RandomForestClassifier":
@@ -136,17 +138,15 @@ class ModelTrainer:
                 elif model_name == "XGBoostXGBClassifier":
                     best_model = XGBClassifier(**study.best_params)
                 
-                # Fit model and get test score
                 best_model.fit(X_train, y_train)
                 y_pred = best_model.predict(X_test)
-                test_recall_1 = recall_score(y_test, y_pred, average='binary', pos_label=1)
+                test_recall_1 = recall_score(y_test, y_pred, average="micro")
 
-                # Store results
+                # Save results
                 model_results[model_name] = {
                     "best_params": study.best_params,
                     "cv_score": study.best_value,
-                    "test_score": test_recall_1,
-                    "trained_model": best_model
+                    "test_score": test_recall_1
                 }
 
                 # Track best overall model
@@ -157,7 +157,7 @@ class ModelTrainer:
 
                 logging.info(f"{model_name} - CV Score: {study.best_value:.4f}, Test Score: {test_recall_1:.4f}")
 
-            # Save results to JSON (excluding the trained model objects)
+            # Save tuning results
             results_for_json = {}
             for name, result in model_results.items():
                 results_for_json[name] = {
@@ -170,20 +170,59 @@ class ModelTrainer:
 
             logging.info(f"Best overall model: {best_model_name} with test recall score: {best_overall_score:.4f}")
             
-            return best_overall_model, best_model_name, model_results
+            return best_model_name, best_overall_model
 
         except Exception as e:
             raise TelcoChurnException(e, sys)
+        
+    # -------------------------------------------------------------------------
+    # MLflow Tracking
+    # -------------------------------------------------------------------------
+    def track_mlflow(self, best_model, classification_test_metric, classification_train_metric):
+        mlflow.set_tracking_uri(os.getenv("MLFLOW TRACKING URI"))
+        mlflow.set_experiment("Telco_Churn_Prediction")
 
+        with mlflow.start_run():
+            # Log train metrics
+            mlflow.log_metric("train_f1_score", classification_train_metric.f1_score)
+            mlflow.log_metric("train_accuracy_score", classification_train_metric.accuracy_score)
+            mlflow.log_metric("train_precision_score", classification_train_metric.precision_score)
+            mlflow.log_metric("train_recall_score", classification_train_metric.recall_score)
+            mlflow.log_metric("train_recall_score_1", classification_train_metric.recall_score_1)
+            mlflow.log_metric("train_recall_score_0", classification_train_metric.recall_score_0)
+
+            # Log test metrics
+            mlflow.log_metric("test_f1_score", classification_test_metric.f1_score)
+            mlflow.log_metric("test_accuracy_score", classification_test_metric.accuracy_score)
+            mlflow.log_metric("test_precision_score", classification_test_metric.precision_score)
+            mlflow.log_metric("test_recall_score", classification_test_metric.recall_score)
+            mlflow.log_metric("test_recall_score_1", classification_test_metric.recall_score_1)
+            mlflow.log_metric("test_recall_score_0", classification_test_metric.recall_score_0)
+
+            logging.info("✅ Train & Test metrics saved successfully")
+
+
+            joblib.dump(best_model, "model.joblib")
+            mlflow.log_artifact("model.joblib", artifact_path="model")
+            logging.info("✅ Model saved as artifact successfully")
+
+            # Cleanup local files
+            os.remove("model.joblib")
+
+    # -------------------------------------------------------------------------
+    # Main Training Pipeline
+    # -------------------------------------------------------------------------
     def initiate_model_training(self):
-        """Main method to initiate model training"""
+        """Orchestrates the entire training workflow."""
         try:
-            # Load your datasets
+            # Load train & test arrays
             train_file_path = self.data_transformation_artifact.transformed_train_file_path
             test_file_path = self.data_transformation_artifact.transformed_test_file_path
 
             train_arr = load_numpy_array_data(train_file_path)
             test_arr = load_numpy_array_data(test_file_path)
+
+            logging.info("📂 Data loaded successfully for training & testing")
 
             x_train, y_train, x_test, y_test = (
                 train_arr[:, :-1],
@@ -192,35 +231,51 @@ class ModelTrainer:
                 test_arr[:, -1],
             )
             
-            # Call hyperparameter tuning
-            best_model, best_model_name, all_results = self.perform_hyper_parameter_tuning(
-                x_train, y_train, x_test, y_test, n_trials=5
+            # Step 1: Hyperparameter tuning
+            best_model_name, best_model = self.perform_hyper_parameter_tuning(
+                x_train, y_train, x_test, y_test
             )
-            
             logging.info(f"Training completed. Best model: {best_model_name}")
 
-            # get best model metrics
+            # Step 2: Evaluate on train & test
             y_train_pred = best_model.predict(x_train)
             classification_train_metric = classification_score(y_train_pred, y_train)
             if classification_train_metric.recall_score_1 <= self.model_trainer_config.expected_recall_1:
                 raise Exception("Trained model is not good to provide expected accuracy")
             
             y_test_pred = best_model.predict(x_test)
-            classification_test_metric = classification_report(y_test_pred, y_test)
+            classification_test_metric = classification_score(y_test_pred, y_test)
 
-            # overfiting and underfiting
+            # Step 3: Check for overfitting/underfitting
             diff = abs(classification_train_metric.recall_score_1 - classification_test_metric.recall_score_1)
+            logging.info(f"Train: {classification_train_metric.recall_score_1}, Test: {classification_test_metric.recall_score_1}, Difference: {diff}")
             if diff > self.model_trainer_config.overfitting_underfitting_threshold:
                 raise Exception("Model is underfitting or overfitting. Do more experimentation")
             
-            preprocessor = load_object(file_path=data_transformation_artifact.transformed_file_object)
+            # Step 4: MLflow tracking
+            self.track_mlflow(best_model, classification_test_metric, classification_train_metric)
+            
+            # Step 5: Save final TelcoChurnModel with preprocessor
+            preprocessor = load_object(file_path=self.data_transformation_artifact.transformed_object_file_path)
+            telco_churn_model = TelcoChurnModel(preprocessor=preprocessor, model=best_model)
 
             model_dir_path = os.path.dirname(self.model_trainer_config.trained_model_file_path)
             os.makedirs(model_dir_path, exist_ok=True)
-            telco_churn_model = 
+            save_object(self.model_trainer_config.trained_model_file_path, obj=telco_churn_model)
 
+            # Step 6: Return Artifact
+            model_trainer_artifact = ModelTrainerArtifact(
+                trained_model_file_path = self.model_trainer_config.trained_model_file_path,
+                train_metric_artifact = classification_train_metric,
+                test_metric_artifact = classification_test_metric,
+                is_model_accepted = None,
+                improved_accuracy = None,
+                best_model_path = None,
+                best_model_metric_artifact = None
+            )
 
-            return best_model, all_results
+            logging.info("Model training pipeline completed successfully")
+            return model_trainer_artifact
             
         except Exception as e:
             raise TelcoChurnException(e, sys)

@@ -120,7 +120,7 @@ class DataTransformation:
 
             # 4. Apply SMOTETomek only on training set
             logging.info("Applying SMOTETomek to balance classes in training set...")
-            smt = SMOTETomek(sampling_strategy="auto")
+            smt = SMOTETomek(sampling_strategy='auto', random_state=42)
             X_train_resampled, y_train_resampled = smt.fit_resample(X_train_transformed, y_train)
 
             logging.info(f"Resampled training set -> X: {X_train_resampled.shape}, y: {y_train_resampled.shape}")
