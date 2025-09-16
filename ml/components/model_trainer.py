@@ -1,13 +1,11 @@
-
-
-from ml.exception import TelcoChurnException
-from ml.logger import logging
 import os
 import sys 
 import optuna
 import dagshub
 import mlflow
 import joblib
+from ml.exception import TelcoChurnException
+from ml.logger import logging
 from dotenv import load_dotenv
 from sklearn.linear_model import LogisticRegression
 from sklearn.ensemble import RandomForestClassifier

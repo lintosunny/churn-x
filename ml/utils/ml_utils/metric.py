@@ -8,13 +8,15 @@ from ml.exception import TelcoChurnException
 
 def classification_score(y_true, y_pred) -> ClassificationMetricArtifact:
     try:
+        # Compute metrics
         model_fl_score = f1_score(y_true, y_pred)
         model_accuracy_score = accuracy_score(y_true, y_pred)
         model_recall_score = recall_score(y_true, y_pred)
         model_recall_score_1 = recall_score(y_true, y_pred, pos_label=1)
         model_recall_score_0 = recall_score(y_true, y_pred, pos_label=0)
         model_precision_score = precision_score(y_true, y_pred)
-
+        
+        # Create and return artifact
         classification_metric = ClassificationMetricArtifact(
             f1_score=model_fl_score,
             accuracy_score=model_accuracy_score,
@@ -25,5 +27,7 @@ def classification_score(y_true, y_pred) -> ClassificationMetricArtifact:
         )
 
         return classification_metric
+    
     except Exception as e:
+        logging.error("Error in calculating classification metrics")
         raise TelcoChurnException(e, sys)

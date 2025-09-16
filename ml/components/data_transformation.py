@@ -10,10 +10,7 @@ from sklearn.compose import ColumnTransformer
 from sklearn.pipeline import Pipeline
 from ml.logger import logging
 from ml.exception import TelcoChurnException
-from ml.entity.artifact_entity import (
-    DataValidationArtifact,
-    DataTransformationArtifact
-)
+from ml.entity.artifact_entity import DataValidationArtifact, DataTransformationArtifact
 from ml.entity.config_entity import DataTransformationConfig
 from ml.constants.training_pipeline import SCHEMA_FILE_PATH
 from ml.constants.training_pipeline import TARGET_COLUMN

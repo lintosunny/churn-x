@@ -10,10 +10,7 @@ from ml.entity.config_entity import DataIngestionConfig
 from ml.utils.main_utils import read_yaml_file
 from sklearn.model_selection import train_test_split
 from ml.constants.training_pipeline import SCHEMA_FILE_PATH
-from ml.constants.training_pipeline import (
-    DATA_INGESTION_DATABASE_NAME, 
-    DATA_INGESTION_COLLECTION_NAME
-)
+from ml.constants.training_pipeline import DATA_INGESTION_DATABASE_NAME, DATA_INGESTION_COLLECTION_NAME
 
 
 class DataIngestion:
@@ -38,8 +35,10 @@ class DataIngestion:
             dir_path = os.path.dirname(feature_store_path)
             os.makedirs(dir_path, exist_ok=True)
             df.to_csv(feature_store_path, index=False, header=True)
-            logging.info("data saved to feature store")
+
+            logging.info(f"data saved to feature store: {feature_store_path}")
             return df 
+        
         except Exception as e:
             raise TelcoChurnException(e, sys)
         
@@ -51,21 +50,18 @@ class DataIngestion:
             train_df, test_df = train_test_split(
                 dataframe, test_size=self.data_ingestion_config.train_test_split_ratio
             )
-
             logging.info("Performed train-test split in dataframe")
-
+            
+            # Ensure directories exist
             dir_path = os.path.dirname(self.data_ingestion_config.train_file_path)
             os.makedirs(dir_path, exist_ok=True)
             logging.info("Started train_df and test_df data exporting...")
 
-            train_df.to_csv(
-                self.data_ingestion_config.train_file_path, index=False, header=True
-            )
+            # Save train and test datasets
+            train_df.to_csv(self.data_ingestion_config.train_file_path, index=False, header=True)
             logging.info(f"train df saved in {self.data_ingestion_config.train_file_path}")
 
-            test_df.to_csv(
-                self.data_ingestion_config.test_file_path, index=False, header=True
-            )
+            test_df.to_csv(self.data_ingestion_config.test_file_path, index=False, header=True)
             logging.info(f"test df saved in {self.data_ingestion_config.test_file_path}")
         
         except Exception as e:
@@ -73,13 +69,25 @@ class DataIngestion:
 
     def initiate_data_ingestion(self) -> DataIngestionArtifact:
         try:
+            logging.info("Initiating data ingestion process...")
+
+            # Step 1: Export data
             df = self.export_data_into_feature_store()
+
+            # Step 2: Drop unnecessary columns as per schema
             df = df.drop(self._schema_config["drop_cols"], axis=1)
+
+            # Step 3: Split and save train/test datasets
             self.save_data_split(dataframe=df)
+
+            # Step 4: Create artifact
             data_ingestion_artifact = DataIngestionArtifact(
                 train_file_path=self.data_ingestion_config.train_file_path,
                 test_file_path=self.data_ingestion_config.test_file_path
             )
+
+            logging.info("Data ingestion completed successfully")
             return data_ingestion_artifact
+        
         except Exception as e:
             raise TelcoChurnException(e, sys)
