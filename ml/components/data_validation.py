@@ -4,7 +4,7 @@ import pandas as pd
 from distutils import dir_util
 from scipy.stats import ks_2samp
 from ml.logger import logging
-from ml.exception import TelcoChurnException
+from ml.exception import TelcoChurnMLException
 from ml.utils.main_utils import read_yaml_file, write_yaml_file
 from ml.constants.training_pipeline import SCHEMA_FILE_PATH
 from ml.entity.config_entity import DataValidationConfig
@@ -21,7 +21,7 @@ class DataValidation:
             self.data_validation_config = data_validation_config
             self._schema_config = read_yaml_file(SCHEMA_FILE_PATH)
         except Exception as e:
-            raise TelcoChurnException(e, sys)
+            raise TelcoChurnMLException(e, sys)
         
     def validate_number_of_columns(self, dataframe: pd.DataFrame) -> bool:
         try:
@@ -33,7 +33,7 @@ class DataValidation:
             else:
                 return False
         except Exception as e:
-            raise TelcoChurnException(e, sys)
+            raise TelcoChurnMLException(e, sys)
         
     def is_numerical_columns_exist(self, dataframe: pd.DataFrame) -> bool:
         try:
@@ -48,14 +48,14 @@ class DataValidation:
             logging.info(f"Missing numerical columns: [{missing_numerical_columns}]")
             return numerical_column_present
         except Exception as e:
-            raise TelcoChurnException(e, sys)
+            raise TelcoChurnMLException(e, sys)
         
     @staticmethod
     def read_data(file_path: str) -> pd.DataFrame:
         try:
             return pd.read_csv(file_path)
         except Exception as e:
-            raise TelcoChurnException(e, sys)
+            raise TelcoChurnMLException(e, sys)
         
     def detect_dataset_drift(self, base_df: pd.DataFrame, current_df: pd.DataFrame, threshold=0.05) -> bool:
         try:
@@ -83,7 +83,7 @@ class DataValidation:
                 write_yaml_file(file_path=drift_report_file_path, content=report)
                 return status
         except Exception as e:
-            raise TelcoChurnException(e, sys)
+            raise TelcoChurnMLException(e, sys)
         
     def initiate_data_validation(self) -> DataIngestionArtifact:
         try:
@@ -131,4 +131,4 @@ class DataValidation:
             logging.info(f"Data validation artifact: {data_validation_artifact}")
             return data_validation_artifact
         except Exception as e:
-            raise TelcoChurnException(e, sys)
+            raise TelcoChurnMLException(e, sys)

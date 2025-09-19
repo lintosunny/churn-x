@@ -1,6 +1,6 @@
 import sys
 
-class TelcoChurnException(Exception):
+class TelcoChurnMLException(Exception):
     def __init__(self, error_message, error_detail: sys):
         self.error_message = error_message
         _,_,exc_tb = error_detail.exc_info()
@@ -17,4 +17,4 @@ if __name__ == "__main__":
     try:
         a = 1 / 0
     except Exception as e:
-        raise TelcoChurnException(e, sys)
+        raise TelcoChurnMLException(e, sys)

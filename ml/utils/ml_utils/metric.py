@@ -4,7 +4,7 @@ import yaml
 from sklearn.metrics import f1_score, accuracy_score, recall_score, precision_score
 from ml.entity.artifact_entity import ClassificationMetricArtifact
 from ml.logger import logging
-from ml.exception import TelcoChurnException
+from ml.exception import TelcoChurnMLException
 
 def classification_score(y_true, y_pred) -> ClassificationMetricArtifact:
     try:
@@ -30,4 +30,4 @@ def classification_score(y_true, y_pred) -> ClassificationMetricArtifact:
     
     except Exception as e:
         logging.error("Error in calculating classification metrics")
-        raise TelcoChurnException(e, sys)
+        raise TelcoChurnMLException(e, sys)

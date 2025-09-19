@@ -3,7 +3,7 @@ import sys
 import pandas as pd
 from pandas import DataFrame
 from ml.logger import logging
-from ml.exception import TelcoChurnException
+from ml.exception import TelcoChurnMLException
 from ml.data_access.telco_data import TelcoData
 from ml.entity.artifact_entity import DataIngestionArtifact
 from ml.entity.config_entity import DataIngestionConfig
@@ -19,7 +19,7 @@ class DataIngestion:
             self.data_ingestion_config = data_ingestion_config
             self._schema_config = read_yaml_file(SCHEMA_FILE_PATH)
         except Exception as e:
-            raise TelcoChurnException(e, sys)
+            raise TelcoChurnMLException(e, sys)
         
     def export_data_into_feature_store(self) -> DataFrame:
         """
@@ -40,7 +40,7 @@ class DataIngestion:
             return df 
         
         except Exception as e:
-            raise TelcoChurnException(e, sys)
+            raise TelcoChurnMLException(e, sys)
         
     def save_data_split(self, dataframe: DataFrame) -> None:
         """
@@ -65,7 +65,7 @@ class DataIngestion:
             logging.info(f"test df saved in {self.data_ingestion_config.test_file_path}")
         
         except Exception as e:
-            raise TelcoChurnException(e, sys)
+            raise TelcoChurnMLException(e, sys)
 
     def initiate_data_ingestion(self) -> DataIngestionArtifact:
         try:
@@ -90,4 +90,4 @@ class DataIngestion:
             return data_ingestion_artifact
         
         except Exception as e:
-            raise TelcoChurnException(e, sys)
+            raise TelcoChurnMLException(e, sys)

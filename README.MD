@@ -17,7 +17,33 @@ We build an ML-powered churn prediction system for a telecom company that not on
 ## ETL Pipeline
 ![etl-pipeline](assets/etl.png)
 
+## Agent Architecture
+> enter image here
+
 ## ML Architecture
 ![ml-architecture](assets/ml-architecture.png)
 ## ML Deployment Architecture
 ![deployment-architecture](assets/deployment-architecture.png)
+
+
+## How to run locally
+
+9. install postgresql
+
+10. create new database
+
+10. seed data
+
+
+10. fastapi for agent api
+```
+uvicorn agent.api.service:app --reload
+```
+
+11. run app
+```
+streamlit run app.py
+```
+
+# How to deploy ml in ec2
+- download aws cli

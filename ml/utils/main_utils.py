@@ -5,7 +5,7 @@ import dill
 import json
 import numpy as np 
 from ml.logger import logging
-from ml.exception import TelcoChurnException
+from ml.exception import TelcoChurnMLException
 
 
 def read_yaml_file(file_path: str) -> dict:
@@ -13,7 +13,7 @@ def read_yaml_file(file_path: str) -> dict:
         with open(file_path, "rb") as yaml_file:
             return yaml.safe_load(yaml_file) 
     except Exception as e:
-        raise TelcoChurnException(e, sys) from e
+        raise TelcoChurnMLException(e, sys) from e
     
 
 def write_yaml_file(file_path: str, content: object, replace: bool = False) -> None:
@@ -25,7 +25,7 @@ def write_yaml_file(file_path: str, content: object, replace: bool = False) -> N
         with open(file_path, "w") as file:
             yaml.dump(content, file)
     except Exception as e:
-        raise TelcoChurnException(e, sys) from e
+        raise TelcoChurnMLException(e, sys) from e
     
 
 def save_numpy_array_data(file_path: str, array: np.array) -> None:
@@ -35,7 +35,7 @@ def save_numpy_array_data(file_path: str, array: np.array) -> None:
         with open(file_path, "wb") as file_obj:
             np.save(file_obj, array)
     except Exception as e:
-        raise TelcoChurnException(e, sys) from e
+        raise TelcoChurnMLException(e, sys) from e
 
 
 def load_numpy_array_data(file_path: str) -> np.array:
@@ -43,7 +43,7 @@ def load_numpy_array_data(file_path: str) -> np.array:
         with open(file_path, "rb") as file_obj:
             return np.load(file_obj)
     except Exception as e:
-        raise TelcoChurnException(e, sys) from e
+        raise TelcoChurnMLException(e, sys) from e
     
 
 def save_object(file_path: str, obj: object) -> None:
@@ -52,7 +52,7 @@ def save_object(file_path: str, obj: object) -> None:
         with open(file_path, "wb") as file_obj:
             dill.dump(obj, file_obj)
     except Exception as e:
-        raise TelcoChurnException(e, sys) from e
+        raise TelcoChurnMLException(e, sys) from e
     
 
 def load_object(file_path: str) -> object:
@@ -62,7 +62,7 @@ def load_object(file_path: str) -> object:
         with open(file_path, "rb") as file_obj:
             return dill.load(file_obj)
     except Exception as e:
-        raise TelcoChurnException(e, sys) from e
+        raise TelcoChurnMLException(e, sys) from e
     
 
 def read_json_file(file_path: str) -> dict:
@@ -73,7 +73,7 @@ def read_json_file(file_path: str) -> dict:
         with open(file_path, "r") as json_file:
             return json.load(json_file)
     except Exception as e:
-        raise TelcoChurnException(e, sys) from e
+        raise TelcoChurnMLException(e, sys) from e
     
 
 def write_json_file(file_path: str, content: object, replace: bool = True) -> None:
@@ -88,4 +88,4 @@ def write_json_file(file_path: str, content: object, replace: bool = True) -> No
         with open(file_path, "w") as json_file:
             json.dump(content, json_file, indent=4)  # pretty print
     except Exception as e:
-        raise TelcoChurnException(e, sys) from e
+        raise TelcoChurnMLException(e, sys) from e

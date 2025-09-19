@@ -9,7 +9,7 @@ from category_encoders.target_encoder import TargetEncoder
 from sklearn.compose import ColumnTransformer
 from sklearn.pipeline import Pipeline
 from ml.logger import logging
-from ml.exception import TelcoChurnException
+from ml.exception import TelcoChurnMLException
 from ml.entity.artifact_entity import DataValidationArtifact, DataTransformationArtifact
 from ml.entity.config_entity import DataTransformationConfig
 from ml.constants.training_pipeline import SCHEMA_FILE_PATH
@@ -24,14 +24,14 @@ class DataTransformation:
             self.data_transformation_config = data_transformation_config
             self._schema_config = read_yaml_file(SCHEMA_FILE_PATH)
         except Exception as e:
-            raise TelcoChurnException(e, sys)
+            raise TelcoChurnMLException(e, sys)
         
     @staticmethod
     def read_data(file_path: str) -> pd.DataFrame:
         try:
             return pd.read_csv(file_path)
         except Exception as e:
-            raise TelcoChurnException(e, sys)
+            raise TelcoChurnMLException(e, sys)
           
     def get_data_transformer_object(self) -> Pipeline:
         try:
@@ -84,7 +84,7 @@ class DataTransformation:
         
         except Exception as e:
             logging.error("Error occurred while building preprocessor.", exc_info=True)
-            raise TelcoChurnException(e, sys)
+            raise TelcoChurnMLException(e, sys)
 
     def initiate_data_transformation(self) -> DataTransformationArtifact:
         try:
@@ -143,4 +143,4 @@ class DataTransformation:
         
         except Exception as e:
             logging.error("Error occurred during data transformation.", exc_info=True)
-            raise TelcoChurnException(e, sys)
+            raise TelcoChurnMLException(e, sys)

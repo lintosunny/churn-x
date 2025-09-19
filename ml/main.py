@@ -2,8 +2,9 @@ from ml.components.data_ingestion import DataIngestion
 from ml.components.data_validation import DataValidation
 from ml.components.data_transformation import DataTransformation
 from ml.components.model_trainer import ModelTrainer
-from ml.entity.config_entity import TrainingPipelineConfig, DataIngestionConfig, DataValidationConfig, DataTransformationConfig, ModelTrainerConfig
-from ml.entity.artifact_entity import DataIngestionArtifact, DataValidationArtifact, DataTransformationArtifact, ModelTrainerArtifact
+from ml.components.model_evaluation import ModelEvaluation
+from ml.entity.config_entity import TrainingPipelineConfig, DataIngestionConfig, DataValidationConfig, DataTransformationConfig, ModelTrainerConfig, ModelEvaluationConfig
+from ml.entity.artifact_entity import DataIngestionArtifact, DataValidationArtifact, DataTransformationArtifact, ModelTrainerArtifact, ModelEvaluationArtifact
 
 
 if __name__ == '__main__':
@@ -23,4 +24,9 @@ if __name__ == '__main__':
 
     model_trainer_config = ModelTrainerConfig(training_pipeline_config)
     model_trainer = ModelTrainer(data_transformation_artifact, model_trainer_config)
-    model_trainer.initiate_model_training()
+    model_trainer_artifact = model_trainer.initiate_model_training()
+
+    model_evaluation_config = ModelEvaluationConfig(training_pipeline_config)
+    model_evaluation = ModelEvaluation(model_evaluation_config, data_validation_artifact, model_trainer_artifact)
+    model_evaluation_artifact = model_evaluation.initiate_model_evaluation()
+

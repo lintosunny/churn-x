@@ -51,7 +51,9 @@ def generate_offer_mail(customer_id: str) -> Dict:
         - List the selected offers with their descriptions.
         - Include a call-to-action to activate the offers.
         - End with a polite closing.
-
+        - Don't add churn probability anywhere in email body or subject
+        - sender is Telco Co.
+        
         Return the complete email text ready to send.
     """
 

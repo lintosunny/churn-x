@@ -4,7 +4,7 @@ import optuna
 import dagshub
 import mlflow
 import joblib
-from ml.exception import TelcoChurnException
+from ml.exception import TelcoChurnMLException
 from ml.logger import logging
 from dotenv import load_dotenv
 from sklearn.linear_model import LogisticRegression
@@ -100,7 +100,7 @@ class ModelTrainer:
     # -------------------------------------------------------------------------
     # Hyperparameter tuning with Optuna
     # -------------------------------------------------------------------------
-    def perform_hyper_parameter_tuning(self, X_train, y_train, X_test, y_test, n_trials=50):
+    def perform_hyper_parameter_tuning(self, X_train, y_train, X_test, y_test, n_trials=10):
         try:
             logging.info("Starting hyperparameter tuning for all models...")
             
@@ -171,7 +171,7 @@ class ModelTrainer:
             return best_model_name, best_overall_model
 
         except Exception as e:
-            raise TelcoChurnException(e, sys)
+            raise TelcoChurnMLException(e, sys)
         
     # -------------------------------------------------------------------------
     # MLflow Tracking
@@ -197,12 +197,12 @@ class ModelTrainer:
             mlflow.log_metric("test_recall_score_1", classification_test_metric.recall_score_1)
             mlflow.log_metric("test_recall_score_0", classification_test_metric.recall_score_0)
 
-            logging.info("✅ Train & Test metrics saved successfully")
+            logging.info("Train & Test metrics saved successfully")
 
 
             joblib.dump(best_model, "model.joblib")
             mlflow.log_artifact("model.joblib", artifact_path="model")
-            logging.info("✅ Model saved as artifact successfully")
+            logging.info("Model saved as artifact successfully")
 
             # Cleanup local files
             os.remove("model.joblib")
@@ -220,7 +220,7 @@ class ModelTrainer:
             train_arr = load_numpy_array_data(train_file_path)
             test_arr = load_numpy_array_data(test_file_path)
 
-            logging.info("📂 Data loaded successfully for training & testing")
+            logging.info("Data loaded successfully for training & testing")
 
             x_train, y_train, x_test, y_test = (
                 train_arr[:, :-1],
@@ -265,15 +265,11 @@ class ModelTrainer:
             model_trainer_artifact = ModelTrainerArtifact(
                 trained_model_file_path = self.model_trainer_config.trained_model_file_path,
                 train_metric_artifact = classification_train_metric,
-                test_metric_artifact = classification_test_metric,
-                is_model_accepted = None,
-                improved_accuracy = None,
-                best_model_path = None,
-                best_model_metric_artifact = None
+                test_metric_artifact = classification_test_metric
             )
 
             logging.info("Model training pipeline completed successfully")
             return model_trainer_artifact
             
         except Exception as e:
-            raise TelcoChurnException(e, sys)
+            raise TelcoChurnMLException(e, sys)

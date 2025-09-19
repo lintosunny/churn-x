@@ -6,7 +6,7 @@ import pandas as pd
 import numpy as np 
 from typing import Optional
 from ml.constants.database import DATABASE
-from ml.exception import TelcoChurnException
+from ml.exception import TelcoChurnMLException
 from ml.configuration.mongo_db_connection import MongoDBClient
 from ml.logger import logging
 from dotenv import load_dotenv
@@ -31,7 +31,7 @@ class TelcoData:
             self.mongo_client = None 
             logging.info("TelcoDataExtract initiated successfully")
         except Exception as e:
-            raise TelcoChurnException(e, sys)
+            raise TelcoChurnMLException(e, sys)
         
     def _get_mongo_client(self) -> pymongo.MongoClient:
         """Get or create MongoDB client connection."""
@@ -70,4 +70,4 @@ class TelcoData:
             return df
         
         except Exception as e:
-            raise TelcoChurnException(e, sys)
+            raise TelcoChurnMLException(e, sys)
