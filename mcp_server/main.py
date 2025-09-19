@@ -1,65 +1,35 @@
-import os
-import sys
-from typing import Optional, Dict, List
-from sqlalchemy import select, desc
 from mcp.server.fastmcp import FastMCP
-from mcp_server.database import db_manager
+from mcp_server.tools.get_customer_personal_data import get_customer_personal_data
+from mcp_server.tools.get_customer_business_data import get_customer_business_data
+from mcp_server.tools.get_offers import get_offers
+from mcp_server.tools.get_prediction import get_prediction
 from dotenv import load_dotenv
-from mcp_server.exception import TelcoChurnMCPException
-
 
 load_dotenv(override=True)
 
+
 mcp = FastMCP("telco-churn")
 
-@mcp.tool
-def get_customer_personal_info(customer_id: str) -> Dict:
-    try: 
-        table = db_manager.get_table("customers")
-        if not table:
-            raise TelcoChurnMCPException("customers table not found")
-        
-        with db_manager.get_pg_connection() as conn:
-            query = select(table).where(table.c.customer_id==customer_id)
-            result = conn._execute(query).first()
-            return dict(result) if result else None 
-        
-    except Exception as e:
-        raise TelcoChurnMCPException(e, sys)
-    
-@mcp.tool
-def get_customer_service_info(customer_id: str) -> Dict:
-    try:
-        collection = db_manager.get_mongo_collection()
-        result = collection.find_one({"customer_id": customer_id})
-        if result:
-            result["_id"] = str(result["_id"])
-        return dict(result) if result else None 
-    
-    except Exception as e:
-        raise TelcoChurnMCPException(e, sys)
-    
-@mcp.tool
-def get_available_offers() -> Dict:
-    try:
-        table = db_manager.get_table("offers")
-        if not table:
-            raise TelcoChurnMCPException("Offers table not found")
+@mcp.tool()
+def business_data_tool(customer_id: str):
+    """Fetch business-related customer data."""
+    return get_customer_business_data(customer_id)
 
-        with db_manager.get_pg_connection() as conn:
-            query = select(table).order_by(desc(table.c.created_at))
-            results = conn.execute(query).fetchall()
-            return [dict(r) for r in results]
-    
-    except Exception as e:
-        raise TelcoChurnMCPException(e, sys)
-    
-@mcp.tool
-def get_prediction(customer_id: str) -> int:
-    try:
-        pass 
-    except Exception as e:
-        raise TelcoChurnMCPException(e, sys)
+@mcp.tool()
+def personal_data_tool(customer_id: str):
+    """Fetch personal-related customer data."""
+    return get_customer_personal_data(customer_id)
 
-if __name__ == "__main__":
-    mcp.run(transport="stdio")
+@mcp.tool()
+def prediction_tool(customer_id: str):
+    """Predict churn probability for a customer."""
+    return get_prediction(customer_id)
+
+@mcp.tool()
+def available_offers_tool():
+    """Get available offers"""
+    return get_offers()
+
+
+if __name__ == '__main__':
+    mcp.run(transport='stdio')

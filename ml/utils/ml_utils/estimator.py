@@ -18,3 +18,8 @@ class TelcoChurnModel:
             return y_hat 
         except Exception as e:
             raise TelcoChurnModel(e, sys)
+        
+    def predict_proba(self, x):
+        X_transformed = self.preprocessor.transform(x)
+        probabilities = self.model.predict_proba(X_transformed)
+        return probabilities[0][1]

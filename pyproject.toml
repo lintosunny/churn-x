@@ -5,13 +5,16 @@ description = "Add your description here"
 readme = "README.md"
 requires-python = ">=3.10"
 dependencies = [
+    "agno>=2.0.7",
     "category-encoders>=2.8.1",
     "certifi>=2025.8.3",
     "dagshub>=0.6.3",
     "dill>=0.4.0",
     "dotenv>=0.9.9",
     "faker>=37.8.0",
+    "fastapi>=0.116.1",
     "google-generativeai>=0.8.5",
+    "groq>=0.31.1",
     "imblearn>=0.0",
     "ipywidgets>=8.1.7",
     "joblib>=1.5.2",
