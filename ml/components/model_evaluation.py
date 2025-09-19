@@ -53,7 +53,7 @@ class ModelEvaluation:
                 model_evaluation_artifact = ModelEvaluationArtifact(
                     is_model_accepted=is_model_accepted,
                     improved_accuracy=None,
-                    best_model_path=self.model_trainer_artifact.train_metric_artifact,
+                    best_model_path=self.model_trainer_artifact.trained_model_file_path,
                     trained_model_path=train_model_file_path,
                     train_model_metric_artifact=self.model_trainer_artifact.train_metric_artifact,
                     best_model_metric_artifact=self.model_trainer_artifact.train_metric_artifact
