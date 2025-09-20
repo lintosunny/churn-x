@@ -71,3 +71,52 @@ class TelcoData:
         
         except Exception as e:
             raise TelcoChurnMLException(e, sys)
+        
+    def get_data_for_prediction(self, customer_id: str, collection_name: str, database_name: Optional[str] = None) -> pd.DataFrame:
+         try:
+            if not database_name or not collection_name:
+                raise ValueError("Database and Collection name must be provided")
+
+            # Get mongodb connection
+            mongo_client = self._get_mongo_client()
+            database = mongo_client[database_name]
+            collection = database[collection_name]
+
+            projection = {
+                '_id': 0, 
+                'CustomerID': 1, 
+                'Senior Citizen': 1, 
+                'Partner': 1, 
+                'Dependents': 1, 
+                'Tenure Months': 1,
+                'Phone Service': 1, 
+                'Multiple Lines': 1, 
+                'Internet Service': 1, 
+                'Online Security': 1, 
+                'Online Backup': 1,
+                'Device Protection': 1, 
+                'Tech Support': 1, 
+                'Streaming TV': 1, 
+                'Streaming Movies': 1, 
+                'Contract': 1, 
+                'Paperless Billing': 1, 
+                'Payment Method': 1, 
+                'Monthly Charges': 1, 
+                'additional_services': 1,
+                '3rd_party_services': 1, 
+                'is_payment_automatic': 1, 
+                'is_payment_recurring': 1,
+                'CLTV': 1,
+                'City': 1,
+                'Total Charges': 1
+            }
+
+            doc = collection.find_one({"CustomerID": customer_id}, projection)
+            if not doc:
+                logging.warning(f"No business data found for customer {customer_id}")
+                raise ValueError(f"No business data found for customer {customer_id}")
+            
+            return pd.DataFrame([doc])
+         
+         except Exception as e:
+            raise TelcoChurnMLException(e, sys)
