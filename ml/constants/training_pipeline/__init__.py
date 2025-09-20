@@ -64,3 +64,4 @@ Model pusher related constant start with MODEL_PUSHER VAR NAME
 """
 MODEL_PUSHER_DIR_NAME: str = "model_pusher"
 MODEL_PUSHER_SAVED_MODEL_DIR = SAVED_MODEL_DIR
+MODEL_PUSHER_S3_BUCKET_NAME: str = "churn-x-bucket"
