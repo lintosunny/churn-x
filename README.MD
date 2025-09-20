@@ -10,7 +10,7 @@ We build an ML-powered churn prediction system for a telecom company that not on
 * A 5% boost in retention can raise profits by 25–95%.
 * High churn signals deeper issues in product, service, or customer experience.
 
-![churn-x-architecture](assets/streamlit_app.png)
+▶️ **[Watch the Project Demo on YouTube](https://youtu.be/-Qweg6sH1fY)**
 
 ## ChurnX Architecture
 ![churn-x-architecture](assets/churn-x-main.png)
@@ -28,24 +28,95 @@ We build an ML-powered churn prediction system for a telecom company that not on
 ![deployment-architecture](assets/deployment-architecture.png)
 
 
-## How to run locally
+## Installation Guide
+Follow these steps to set up and run the project on your system
 
-9. install postgresql
+### 1. Clone the Repository
+```
+https://github.com/lintosunny/churn-x.git
+```
 
-10. create new database
+### 2. Create a virtual environment & install dependencies
+```
+uv sync
+```
 
-10. seed data
+### 3. Activate the Virtual Environment
+windows
+```
+.venv\Scripts\activate
+```
 
+Linux/Max
+```
+source .venv/bin/activate
+```
 
-10. fastapi for agent api
+### 4. Set up Environment Variables
+Create a ```.env``` file in the project root and add the following:
+
+```
+# ---------------------------------
+# MongoDB
+# ---------------------------------
+MONGO_DB_URL=
+MONGO_DB = 
+MONGO_COLLECTION = 
+
+# ---------------------------------
+# MLFLOW
+# ---------------------------------
+MLFLOW_TRACKING_URI=
+MLFLOW_TRACKING_USERNAME=
+MLFLOW_TRACKING_PASSWORD=
+
+# ---------------------------------
+# PostgresSQL
+# ---------------------------------
+PG_USER = 
+PG_PASSWORD = 
+PG_HOST = 
+PG_PORT = 
+PG_NAME = 
+
+# ---------------------------------
+# LLM
+# ---------------------------------
+GROQ_API_KEY = 
+
+# ---------------------------------
+# AWS
+# ---------------------------------
+AWS_BUCKET_NAME = 
+AWS_ACCESS_KEY_ID = 
+AWS_SECRET_ACCESS_KEY = 
+AWS_DEFAULT_REGION = 
+```
+
+### 5. Setup PostgreSQL
+*[Download PostgreSQL](https://www.postgresql.org/download/)*  ->  Create ```telcodb``` database
+
+```
+python -m telcoDB.seed_db
+```
+
+### 6. Run Agent API
 ```
 uvicorn agent.api.service:app --reload
 ```
 
-11. run app
+### 7. Run Streamlit APP
 ```
 streamlit run app.py
 ```
 
 # How to deploy ml in ec2
 - download aws cli
+
+
+
+
+
+
+## Streamlit APP
+![streamlit-app](assets/streamlit_app.png)
