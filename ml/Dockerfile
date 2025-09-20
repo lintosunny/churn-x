@@ -12,17 +12,17 @@ RUN apt-get update -y \
     && apt-get install -y awscli \
     && rm -rf /var/lib/apt/lists/*
 
-# Copy pyproject.toml and uv.lock from root
-COPY ../pyproject.toml ../uv.lock ./
+# Copy pyproject.toml and uv.lock from root (root is build context)
+COPY pyproject.toml uv.lock ./
 
 # Install Python dependencies
 RUN uv sync --locked
 
-# Copy application code
-COPY . .
+# Copy only ML app code
+COPY ml/ ./ml/
 
 # Expose FastAPI port
 EXPOSE 8000
 
 # Run FastAPI using uv
-CMD ["uv", "run", "uvicorn", "app:app", "--host", "0.0.0.0", "--port", "8000"]
+CMD ["uv", "run", "uvicorn", "ml.app:app", "--host", "0.0.0.0", "--port", "8000"]
