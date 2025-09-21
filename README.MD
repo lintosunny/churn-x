@@ -1,5 +1,5 @@
 # ChurnX: AI-Powered Telco Customer Retention
-We build an ML-powered churn prediction system for a telecom company that not only identifies at-risk customers and key churn drivers but also uses Agno AI Agent and Rasa Chatbot to deliver personalized offers, automate retention conversations, and boost customer loyalty.
+We build an ML-powered churn prediction system for a telecom company that not only identifies at-risk customers and key churn drivers but also uses Agno AI Agent to deliver personalized offers, automate retention conversations, and boost customer loyalty.
 
 **Use case**: Customer support rep enters customer ID in CRM → backend calls agent API → suggests best retention offer
 
