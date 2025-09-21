@@ -119,6 +119,7 @@ class DataTransformation:
             logging.info("Applying SMOTETomek to balance classes in training set...")
             smt = SMOTETomek(sampling_strategy='auto', random_state=42)
             X_train_resampled, y_train_resampled = smt.fit_resample(X_train_transformed, y_train)
+            X_test_transformed, y_test = smt.fit_resample(X_test_transformed, y_test)  # remove this line if test df don't want SMOTETomek
 
             logging.info(f"Resampled training set -> X: {X_train_resampled.shape}, y: {y_train_resampled.shape}")
 
