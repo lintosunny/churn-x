@@ -12,20 +12,23 @@ We build an ML-powered churn prediction system for a telecom company that not on
 
 ▶️ **[Watch the Project Demo on YouTube](https://youtu.be/-Qweg6sH1fY)**
 
+## Tech Stack
+![tech-stack](docs/tech-stack.png)
+
 ## ChurnX Architecture
-![churn-x-architecture](assets/churn-x-main.png)
+![churn-x-architecture](docs/churn-x-main.png)
 > ML pipeline trains in EC2 and pushes the latest model to S3. The agent microservice pulls that model and exposes it as an API. Any company system (web, CRM, apps) can call the agent API to get predictions + recommended sales offers. This makes the ML system usable by business teams in real-time, not just a research model.
 
 ## ETL Pipeline
-![etl-pipeline](assets/etl.png)
+![etl-pipeline](docs/etl.png)
 
 ## Agent Architecture
-![ai-agent](assets/ai-agent.png)
+![ai-agent](docs/ai-agent.png)
 
 ## ML Architecture
-![ml-architecture](assets/ml-architecture.png)
+![ml-architecture](docs/ml-architecture.png)
 ## ML Deployment Architecture
-![deployment-architecture](assets/deployment-architecture.png)
+![deployment-architecture](docs/deployment-architecture.png)
 
 
 ## Installation Guide
