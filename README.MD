@@ -173,4 +173,4 @@ Github self-hosted runner
 > This allows GitHub Actions workflows to execute on your EC2 instance, building Docker images, deploying the Agent API, or running scheduled ML pipelines.
 
 ## Streamlit APP
-![streamlit-app](assets/streamlit_app.png)
+![streamlit-app](docs/streamlit_app.png)
