@@ -3,14 +3,13 @@ We build an ML-powered churn prediction system for a telecom company that not on
 
 **Use case**: Customer support rep enters customer ID in CRM → backend calls agent API → suggests best retention offer
 
+▶️ **[Watch the Project Demo on YouTube](https://youtu.be/-Qweg6sH1fY)**
 
 ## Why Churn Matters
 
 * Acquiring new customers costs 5–25x more than keeping existing ones.
 * A 5% boost in retention can raise profits by 25–95%.
 * High churn signals deeper issues in product, service, or customer experience.
-
-▶️ **[Watch the Project Demo on YouTube](https://youtu.be/-Qweg6sH1fY)**
 
 ## Tech Stack
 ![tech-stack](docs/tech-stack.png)
@@ -173,4 +172,4 @@ Github self-hosted runner
 > This allows GitHub Actions workflows to execute on your EC2 instance, building Docker images, deploying the Agent API, or running scheduled ML pipelines.
 
 ## Streamlit APP
-![streamlit-app](assets/streamlit_app.png)
+![streamlit-app](docs/streamlit_app.png)
