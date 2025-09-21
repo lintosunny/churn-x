@@ -7,7 +7,7 @@ import numpy as np
 from typing import Optional
 from ml.constants.database import DATABASE
 from ml.exception import TelcoChurnMLException
-from ml.configuration.mongo_db_connection import MongoDBClient
+from ml.config.mongo_db_connection import MongoDBClient
 from ml.logger import logging
 from dotenv import load_dotenv
 load_dotenv()

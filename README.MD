@@ -20,7 +20,7 @@ We build an ML-powered churn prediction system for a telecom company that not on
 ![etl-pipeline](assets/etl.png)
 
 ## Agent Architecture
-> enter image here
+![ai-agent](assets/ai-agent.png)
 
 ## ML Architecture
 ![ml-architecture](assets/ml-architecture.png)
