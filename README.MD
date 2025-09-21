@@ -110,13 +110,64 @@ uvicorn agent.api.service:app --reload
 streamlit run app.py
 ```
 
-# How to deploy ml in ec2
-- download aws cli
+## Cloud Deployment - ML Model in EC2
+This section explains how to deploy ChurnX in the cloud using AWS and GitHub Actions with a self-hosted runner.
 
+### 1. Create IAM User
+- Create a new IAM user with programmatic access.
+- Attach policies for S3, EC2, and ECR access.
+- Note the ```AWS_ACCESS_KEY_ID``` and ```AWS_SECRET_ACCESS_KEY```
 
+### 2. Create S3 Bucket
+- Create an S3 bucket to store ML models, feature data, and artifacts.
+- Name it clearly, e.g., ```churnx-models```.
 
+### 3. Create ECR Repository
+- Create an Elastic Container Registry (ECR) repo to store Docker images for your Agent API
 
+### 4. Configure Github Repository Secrets
+```
+AWS_ACCESS_KEY_ID = 
+AWS_ECR_LOGIN_URI = 
+AWS_REGION = 
+AWS_SECRET_ACCESS_KEY = 
+ECR_REPOSITORY_NAME =
+```
 
+### 5. Create EC2 Instance
+- Launch an EC2 instance (Ubuntu recommended)
+
+### 6. Create Github Self-Hosted Runner
+- Navigate to Your Repo → Settings → Actions → Runners → New self-hosted runner
+
+### 7. EC2 Setup
+connect via SSH
+```
+ssh -i <your-key>.pem ubuntu@<EC2-PUBLIC-IP>
+```
+
+update system packages
+```
+sudo apt-get update -y
+sudo apt-get upgrade -y
+```
+
+Install docker
+```
+curl -fsSL https://get.docker.com -o get-docker.sh
+sudo sh get-docker.sh
+sudo usermod -aG docker ubuntu
+newgrp docker
+```
+
+Github self-hosted runner
+1. Navigate to Your Repo → Settings → Actions → Runners → New self-hosted runner
+2. Select OS: Linux
+3. Run commands on your EC2 instance:
+- Download and configure the runner.
+- Set the runner name: ```self-hosted```
+- Start the runner service.
+> This allows GitHub Actions workflows to execute on your EC2 instance, building Docker images, deploying the Agent API, or running scheduled ML pipelines.
 
 ## Streamlit APP
 ![streamlit-app](assets/streamlit_app.png)
